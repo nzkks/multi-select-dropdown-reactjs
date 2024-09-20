@@ -1,6 +1,6 @@
-# App Name
+# Multi-Select Dropdown UI
 
-App Details
+Multi-Select Dropdown UI using Reactjs
 
 ---
 
