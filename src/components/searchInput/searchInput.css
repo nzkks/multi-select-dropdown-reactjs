@@ -1,0 +1,23 @@
+.searchInputWrapper {
+}
+
+.searchInputWrapper .inner {
+  border: 1px solid #ccc;
+  border-radius: 20px;
+}
+
+.searchInputWrapper .inputContainer {
+  width: 100%;
+}
+
+.searchInputWrapper input {
+  box-sizing: border-box;
+  background: transparent;
+  border-radius: 20px;
+  border: none;
+  padding: 5px 15px;
+}
+
+.searchInputWrapper input:focus {
+  outline: none;
+}
