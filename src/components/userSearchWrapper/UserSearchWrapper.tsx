@@ -12,6 +12,7 @@ type UserData = Pick<APIResponseType, 'id' | 'firstName' | 'lastName' | 'image'>
 const UserSearchWrapper = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [users, setUsers] = useState<UserData[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<UserData[]>([]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -55,6 +56,14 @@ const UserSearchWrapper = () => {
     return () => controller.abort();
   }, [searchTerm]);
 
+  const handleSelectedUser = (user: UserData) => {
+    setSelectedUsers([...selectedUsers, user]);
+    setSearchTerm('');
+    setUsers([]);
+  };
+
+  console.log(selectedUsers);
+
   return (
     <SearchInput
       options={users}
@@ -66,6 +75,7 @@ const UserSearchWrapper = () => {
           <span>{`${user.firstName} ${user.lastName}`}</span>
         </>
       )}
+      onSuggestionSelected={handleSelectedUser}
     />
   );
 };

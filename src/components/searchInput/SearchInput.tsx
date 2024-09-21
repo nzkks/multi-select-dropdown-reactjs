@@ -6,9 +6,10 @@ type Props<T> = {
   searchTerm: string;
   setSearchTerm: Dispatch<SetStateAction<string>>;
   renderOption: (option: T) => ReactNode;
+  onSuggestionSelected: (option: T) => void;
 };
 
-const SearchInput = <T,>({ options, searchTerm, setSearchTerm, renderOption }: Props<T>) => {
+const SearchInput = <T,>({ options, searchTerm, setSearchTerm, renderOption, onSuggestionSelected }: Props<T>) => {
   return (
     <div className="searchInputWrapper">
       <div className="inner">
@@ -16,7 +17,9 @@ const SearchInput = <T,>({ options, searchTerm, setSearchTerm, renderOption }: P
           <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search" />
           <ul className="suggestionsList">
             {options.map((option, index) => (
-              <li key={index}>{renderOption(option)}</li>
+              <li key={index} onClick={() => onSuggestionSelected(option)}>
+                {renderOption(option)}
+              </li>
             ))}
           </ul>
         </div>
