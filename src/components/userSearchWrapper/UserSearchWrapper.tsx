@@ -5,14 +5,16 @@ type APIResponseType = {
   id: number;
   firstName: string;
   lastName: string;
+  email: string;
   image: string;
 };
-type UserData = Pick<APIResponseType, 'id' | 'firstName' | 'lastName' | 'image'>;
+type UserData = Pick<APIResponseType, 'id' | 'firstName' | 'lastName' | 'email' | 'image'>;
 
 const UserSearchWrapper = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [users, setUsers] = useState<UserData[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<UserData[]>([]);
+  const [selectedUsersSet, setSelectedUsersSet] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const controller = new AbortController();
@@ -33,6 +35,7 @@ const UserSearchWrapper = () => {
           id: user.id,
           firstName: user.firstName,
           lastName: user.lastName,
+          email: user.email,
           image: user.image,
         }));
 
@@ -58,6 +61,7 @@ const UserSearchWrapper = () => {
 
   const handleSelectedUser = (user: UserData) => {
     setSelectedUsers([...selectedUsers, user]);
+    setSelectedUsersSet(new Set([...selectedUsersSet, user.email]));
     setSearchTerm('');
     setUsers([]);
   };
@@ -69,12 +73,14 @@ const UserSearchWrapper = () => {
       options={users}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
-      renderOption={user => (
-        <>
-          <img src={user.image} alt={`${user.firstName} ${user.lastName}`} />
-          <span>{`${user.firstName} ${user.lastName}`}</span>
-        </>
-      )}
+      renderOption={user => {
+        return !selectedUsersSet.has(user.email) ? (
+          <>
+            <img src={user.image} alt={`${user.firstName} ${user.lastName}`} />
+            <span>{`${user.firstName} ${user.lastName}`}</span>
+          </>
+        ) : null;
+      }}
       onSuggestionSelected={handleSelectedUser}
     />
   );

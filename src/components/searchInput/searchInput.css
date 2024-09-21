@@ -54,3 +54,7 @@
   width: 30px;
   height: 30px;
 }
+
+.searchInputWrapper .suggestionsList li:empty {
+  display: none;
+}
