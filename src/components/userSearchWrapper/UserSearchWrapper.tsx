@@ -61,10 +61,10 @@ const UserSearchWrapper = () => {
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
       renderOption={user => (
-        <div>
+        <>
           <img src={user.image} alt={`${user.firstName} ${user.lastName}`} />
           <span>{`${user.firstName} ${user.lastName}`}</span>
-        </div>
+        </>
       )}
     />
   );

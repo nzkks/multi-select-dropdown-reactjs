@@ -14,7 +14,7 @@ const SearchInput = <T,>({ options, searchTerm, setSearchTerm, renderOption }: P
       <div className="inner">
         <div className="inputContainer">
           <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search" />
-          <ul>
+          <ul className="suggestionsList">
             {options.map((option, index) => (
               <li key={index}>{renderOption(option)}</li>
             ))}
