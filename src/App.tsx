@@ -1,12 +1,12 @@
 import './App.css';
-import SearchInput from './components/searchInput/SearchInput';
+import UserSearchWrapper from './components/userSearchWrapper/UserSearchWrapper';
 
 const App = () => {
   return (
     <>
       <h3>Multi-Select Dropdown UI</h3>
 
-      <SearchInput />
+      <UserSearchWrapper />
     </>
   );
 };
