@@ -1,19 +1,24 @@
-import { useState } from 'react';
-
+import { Dispatch, ReactNode, SetStateAction } from 'react';
 import './searchInput.css';
 
-const SearchInput = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+type Props<T> = {
+  options: T[];
+  searchTerm: string;
+  setSearchTerm: Dispatch<SetStateAction<string>>;
+  renderOption: (option: T) => ReactNode;
+};
 
+const SearchInput = <T,>({ options, searchTerm, setSearchTerm, renderOption }: Props<T>) => {
   return (
     <div className="searchInputWrapper">
       <div className="inner">
-        {/* Pills */}
-
-        {/* Search Input with suggestions */}
         <div className="inputContainer">
           <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search" />
-          {/* Search suggestions */}
+          <ul>
+            {options.map((option, index) => (
+              <li key={index}>{renderOption(option)}</li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
