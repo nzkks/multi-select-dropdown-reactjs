@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
-
 import SearchInput from '../searchInput/SearchInput';
 
-// type APIResponse = Record<string, unknown>;
 type APIResponseType = {
   id: number;
   firstName: string;
@@ -16,10 +14,19 @@ const UserSearchWrapper = () => {
   const [users, setUsers] = useState<UserData[]>([]);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const handleSearchUsers = async (searchTerm: string) => {
       try {
         // I am aware that, this dummyjson APIs allows to specify the needed keys like `https://dummyjson.com/users/search?q=${searchTerm}&select=id,firstName,lastName,image`.
-        const response = await fetch(`https://dummyjson.com/users/search?q=${searchTerm}`);
+        const response = await fetch(`https://dummyjson.com/users/search?q=${searchTerm}`, {
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
         const data = await response.json();
         const usersData: UserData[] = data.users.map((user: APIResponseType) => ({
           id: user.id,
@@ -29,8 +36,12 @@ const UserSearchWrapper = () => {
         }));
 
         setUsers(usersData);
-      } catch (error) {
-        console.error(error);
+      } catch (error: unknown) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.log('Fetch aborted');
+        } else {
+          console.error('Fetch error:', error);
+        }
       }
     };
 
@@ -40,6 +51,8 @@ const UserSearchWrapper = () => {
     }
 
     handleSearchUsers(searchTerm);
+
+    return () => controller.abort();
   }, [searchTerm]);
 
   return (
