@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { KeyboardEvent, useEffect, useState } from 'react';
 import SearchInput from '../searchInput/SearchInput';
 
 import './userSearch.css';
@@ -78,6 +78,15 @@ const UserSearchWrapper = () => {
     setSelectedUsersSet(updatedEmails);
   };
 
+  const handleInputKeydown = (e: KeyboardEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    if (e.key === 'Backspace' && target.value === '' && selectedUsers.length > 0) {
+      const lastUser = selectedUsers[selectedUsers.length - 1];
+      handleRemoveSelectedUser(lastUser);
+      setUsers([]);
+    }
+  };
+
   return (
     <SearchInput
       options={users}
@@ -92,6 +101,7 @@ const UserSearchWrapper = () => {
         return !selectedUsersSet.has(user.email) ? <UserOption user={user} /> : null;
       }}
       onOptionSelected={handleSelectedUser}
+      onInputKeyDown={handleInputKeydown}
     />
   );
 };
