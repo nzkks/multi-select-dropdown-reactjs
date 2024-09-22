@@ -29,13 +29,15 @@ const SearchInput = <T,>({
         ))}
         <div className="inputContainer">
           <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search" />
-          <ul className="suggestionsList">
-            {options.map((option, index) => (
-              <li key={index} onClick={() => onSuggestionSelected(option)}>
-                {renderOption(option)}
-              </li>
-            ))}
-          </ul>
+          {options.length > 0 ? (
+            <ul className="suggestionsList">
+              {options.map((option, index) => (
+                <li key={index} onClick={() => onSuggestionSelected(option)}>
+                  {renderOption(option)}
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </div>
       </div>
     </div>
