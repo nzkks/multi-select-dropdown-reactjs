@@ -25,7 +25,7 @@ const SearchInput = <T,>({
   onOptionSelected,
   onInputKeyDown,
 }: Props<T>) => {
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleOptionSelected = (option: T) => {
     onOptionSelected(option);
