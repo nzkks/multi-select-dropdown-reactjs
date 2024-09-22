@@ -1,18 +1,32 @@
 import { Dispatch, ReactNode, SetStateAction } from 'react';
+
 import './searchInput.css';
 
 type Props<T> = {
   options: T[];
+  selectedOptions: T[];
+  renderSelectedItem: (option: T) => ReactNode;
   searchTerm: string;
   setSearchTerm: Dispatch<SetStateAction<string>>;
   renderOption: (option: T) => ReactNode;
   onSuggestionSelected: (option: T) => void;
 };
 
-const SearchInput = <T,>({ options, searchTerm, setSearchTerm, renderOption, onSuggestionSelected }: Props<T>) => {
+const SearchInput = <T,>({
+  options,
+  selectedOptions,
+  renderSelectedItem,
+  searchTerm,
+  setSearchTerm,
+  renderOption,
+  onSuggestionSelected,
+}: Props<T>) => {
   return (
     <div className="searchInputWrapper">
-      <div className="inner">
+      <div className="flex inner">
+        {selectedOptions.map((selectedOption, index) => (
+          <div key={index}>{renderSelectedItem(selectedOption)}</div>
+        ))}
         <div className="inputContainer">
           <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search" />
           <ul className="suggestionsList">

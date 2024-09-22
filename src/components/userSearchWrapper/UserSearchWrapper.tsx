@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import SearchInput from '../searchInput/SearchInput';
 
+import './userSearch.css';
+import UserOption from './UserOption';
+
 type APIResponseType = {
   id: number;
   firstName: string;
@@ -66,20 +69,17 @@ const UserSearchWrapper = () => {
     setUsers([]);
   };
 
-  console.log(selectedUsers);
-
   return (
     <SearchInput
       options={users}
+      selectedOptions={selectedUsers}
+      renderSelectedItem={user => {
+        return <UserOption user={user} className="selectedUser" />;
+      }}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
       renderOption={user => {
-        return !selectedUsersSet.has(user.email) ? (
-          <>
-            <img src={user.image} alt={`${user.firstName} ${user.lastName}`} />
-            <span>{`${user.firstName} ${user.lastName}`}</span>
-          </>
-        ) : null;
+        return !selectedUsersSet.has(user.email) ? <UserOption user={user} /> : null;
       }}
       onSuggestionSelected={handleSelectedUser}
     />
