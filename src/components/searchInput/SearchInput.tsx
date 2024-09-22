@@ -6,6 +6,7 @@ type Props<T> = {
   options: T[];
   selectedOptions: T[];
   renderSelectedItem: (option: T) => ReactNode;
+  onRemoveSelectedOption: (option: T) => void;
   searchTerm: string;
   setSearchTerm: Dispatch<SetStateAction<string>>;
   renderOption: (option: T) => ReactNode;
@@ -16,6 +17,7 @@ const SearchInput = <T,>({
   options,
   selectedOptions,
   renderSelectedItem,
+  onRemoveSelectedOption,
   searchTerm,
   setSearchTerm,
   renderOption,
@@ -25,7 +27,12 @@ const SearchInput = <T,>({
     <div className="searchInputWrapper">
       <div className="flex inner">
         {selectedOptions.map((selectedOption, index) => (
-          <div key={index}>{renderSelectedItem(selectedOption)}</div>
+          <div key={index} className="flex">
+            {renderSelectedItem(selectedOption)}
+            <div className="closeBtn" onClick={() => onRemoveSelectedOption(selectedOption)}>
+              &times;
+            </div>
+          </div>
         ))}
         <div className="inputContainer">
           <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search" />

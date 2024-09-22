@@ -69,6 +69,15 @@ const UserSearchWrapper = () => {
     setUsers([]);
   };
 
+  const handleRemoveSelectedUser = (user: UserData) => {
+    const updatedSelectedUsers = selectedUsers.filter(selectedUser => selectedUser.email !== user.email);
+    setSelectedUsers(updatedSelectedUsers);
+
+    const updatedEmails = new Set(selectedUsersSet);
+    updatedEmails.delete(user.email);
+    setSelectedUsersSet(updatedEmails);
+  };
+
   return (
     <SearchInput
       options={users}
@@ -76,6 +85,7 @@ const UserSearchWrapper = () => {
       renderSelectedItem={user => {
         return <UserOption user={user} className="selectedUser" />;
       }}
+      onRemoveSelectedOption={handleRemoveSelectedUser}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}
       renderOption={user => {

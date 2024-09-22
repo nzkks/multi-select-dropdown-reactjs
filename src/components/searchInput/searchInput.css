@@ -49,3 +49,8 @@
 .searchInputWrapper .suggestionsList li:empty {
   display: none;
 }
+
+.searchInputWrapper .closeBtn {
+  padding: 0 10px;
+  cursor: pointer;
+}
