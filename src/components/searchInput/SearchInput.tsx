@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction } from 'react';
+import { Dispatch, ReactNode, SetStateAction, useRef } from 'react';
 
 import './searchInput.css';
 
@@ -10,7 +10,7 @@ type Props<T> = {
   searchTerm: string;
   setSearchTerm: Dispatch<SetStateAction<string>>;
   renderOption: (option: T) => ReactNode;
-  onSuggestionSelected: (option: T) => void;
+  onOptionSelected: (option: T) => void;
 };
 
 const SearchInput = <T,>({
@@ -21,8 +21,15 @@ const SearchInput = <T,>({
   searchTerm,
   setSearchTerm,
   renderOption,
-  onSuggestionSelected,
+  onOptionSelected,
 }: Props<T>) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleOptionSelected = (option: T) => {
+    onOptionSelected(option);
+    inputRef?.current?.focus();
+  };
+
   return (
     <div className="searchInputWrapper">
       <div className="flex inner">
@@ -35,11 +42,17 @@ const SearchInput = <T,>({
           </div>
         ))}
         <div className="inputContainer">
-          <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search" />
+          <input
+            ref={inputRef}
+            type="text"
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            placeholder="Search"
+          />
           {options.length > 0 ? (
             <ul className="suggestionsList">
               {options.map((option, index) => (
-                <li key={index} onClick={() => onSuggestionSelected(option)}>
+                <li key={index} onClick={() => handleOptionSelected(option)}>
                   {renderOption(option)}
                 </li>
               ))}

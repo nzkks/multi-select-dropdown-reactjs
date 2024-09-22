@@ -91,7 +91,7 @@ const UserSearchWrapper = () => {
       renderOption={user => {
         return !selectedUsersSet.has(user.email) ? <UserOption user={user} /> : null;
       }}
-      onSuggestionSelected={handleSelectedUser}
+      onOptionSelected={handleSelectedUser}
     />
   );
 };
