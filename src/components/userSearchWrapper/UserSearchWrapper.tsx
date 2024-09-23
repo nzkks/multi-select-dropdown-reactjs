@@ -1,8 +1,22 @@
-import { KeyboardEvent, useEffect, useState } from 'react';
+import { KeyboardEvent, useCallback, useEffect, useState } from 'react';
 import SearchInput from '../searchInput/SearchInput';
 
 import './userSearch.css';
 import UserOption from './UserOption';
+
+function debounce<T extends (...args: Parameters<T>) => void>(
+  callbackFn: T,
+  delay: number
+): (...args: Parameters<T>) => void {
+  let timer: ReturnType<typeof setTimeout>;
+
+  return (...args: Parameters<T>) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      callbackFn(...args);
+    }, delay);
+  };
+}
 
 type APIResponseType = {
   id: number;
@@ -19,48 +33,49 @@ const UserSearchWrapper = () => {
   const [selectedUsers, setSelectedUsers] = useState<UserData[]>([]);
   const [selectedUsersSet, setSelectedUsersSet] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    const controller = new AbortController();
+  const handleSearchUsers = async (searchTerm: string) => {
+    try {
+      // I am aware that, this dummyjson APIs allows to specify the needed keys like `https://dummyjson.com/users/search?q=${searchTerm}&select=id,firstName,lastName,image`.
+      const response = await fetch(`https://dummyjson.com/users/search?q=${searchTerm}`);
 
-    const handleSearchUsers = async (searchTerm: string) => {
-      try {
-        // I am aware that, this dummyjson APIs allows to specify the needed keys like `https://dummyjson.com/users/search?q=${searchTerm}&select=id,firstName,lastName,image`.
-        const response = await fetch(`https://dummyjson.com/users/search?q=${searchTerm}`, {
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        const data = await response.json();
-        const usersData: UserData[] = data.users.map((user: APIResponseType) => ({
-          id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          image: user.image,
-        }));
-
-        setUsers(usersData);
-      } catch (error: unknown) {
-        if (error instanceof Error && error.name === 'AbortError') {
-          console.log('Fetch aborted');
-        } else {
-          console.error('Fetch error:', error);
-        }
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-    };
 
+      const data = await response.json();
+      const usersData: UserData[] = data.users.map((user: APIResponseType) => ({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        image: user.image,
+      }));
+
+      setUsers(usersData);
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.log('Fetch aborted');
+      } else {
+        console.error('Fetch error:', error);
+      }
+    }
+  };
+
+  const debouncedFetchUsers = useCallback(
+    debounce((searchTerm: string) => handleSearchUsers(searchTerm), 800),
+    []
+  );
+
+  useEffect(() => {
     if (searchTerm.trim() === '') {
       setUsers([]);
       return;
     }
 
-    handleSearchUsers(searchTerm);
-
-    return () => controller.abort();
-  }, [searchTerm]);
+    if (searchTerm) {
+      debouncedFetchUsers(searchTerm);
+    }
+  }, [debouncedFetchUsers, searchTerm]);
 
   const handleSelectedUser = (user: UserData) => {
     setSelectedUsers([...selectedUsers, user]);
