@@ -1,4 +1,4 @@
-import { Dispatch, KeyboardEvent, ReactNode, SetStateAction, useRef } from 'react';
+import { Dispatch, ReactNode, SetStateAction, useRef } from 'react';
 
 import './searchInput.css';
 
@@ -11,7 +11,7 @@ type Props<T> = {
   setSearchTerm: Dispatch<SetStateAction<string>>;
   renderOption: (option: T) => ReactNode;
   onOptionSelected: (option: T) => void;
-  onInputKeyDown: (event: KeyboardEvent<HTMLInputElement>) => void;
+  onInputKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 };
 
 const SearchInput = <T,>({
