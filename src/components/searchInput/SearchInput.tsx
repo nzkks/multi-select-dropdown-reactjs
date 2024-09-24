@@ -43,6 +43,11 @@ const SearchInput = <T,>({
     const inputTarget = inputRef.current;
     if (inputTarget === null) return;
 
+    if (e.key === 'Enter') {
+      setIsOpen(prev => !prev);
+      if (isOpen && activeIndex > 0) handleOptionSelected(options[activeIndex]);
+    }
+
     if (e.key === 'Escape' && options.length > 0 && isOpen) {
       setOptions([]);
       setIsOpen(false);
