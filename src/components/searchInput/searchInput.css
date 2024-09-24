@@ -41,7 +41,9 @@
   border-bottom: none;
 }
 
-.searchInputWrapper .suggestionsList li:hover {
+.searchInputWrapper .suggestionsList li:hover,
+.searchInputWrapper .suggestionsList li:focus,
+.searchInputWrapper .suggestionsList li.active {
   background-color: #ccc;
   color: #000;
 }

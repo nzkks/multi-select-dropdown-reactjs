@@ -27,6 +27,7 @@ const SearchInput = <T,>({
 }: Props<T>) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     setIsOpen(options.length > 0);
@@ -38,12 +39,20 @@ const SearchInput = <T,>({
   };
 
   const handleInputKeydown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (searchTerm === '') setActiveIndex(0);
     const inputTarget = inputRef.current;
     if (inputTarget === null) return;
 
     if (e.key === 'Escape' && options.length > 0 && isOpen) {
       setOptions([]);
       setIsOpen(false);
+    }
+
+    if (e.key === 'ArrowDown' || (e.key === 'ArrowUp' && options.length > 0 && isOpen)) {
+      setActiveIndex(activeIndex + (e.key === 'ArrowDown' ? 1 : -1));
+      if (activeIndex >= options.length - 1) {
+        setActiveIndex(0);
+      }
     }
 
     if (e.key === 'Backspace') {
@@ -77,7 +86,12 @@ const SearchInput = <T,>({
           {options.length > 0 ? (
             <ul className="suggestionsList">
               {options.map((option, index) => (
-                <li key={index} onClick={() => handleOptionSelected(option)}>
+                <li
+                  key={index}
+                  onClick={() => handleOptionSelected(option)}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  className={`${activeIndex === index ? 'active' : ''}`}
+                >
                   {renderOption(option)}
                 </li>
               ))}
