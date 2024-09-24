@@ -96,6 +96,7 @@ const UserSearchWrapper = () => {
   return (
     <SearchInput
       options={users}
+      setOptions={setUsers}
       selectedOptions={selectedUsers}
       renderSelectedItem={user => {
         return <UserOption user={user} className="selectedUser" />;

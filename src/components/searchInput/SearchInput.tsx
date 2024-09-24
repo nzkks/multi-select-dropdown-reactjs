@@ -1,9 +1,10 @@
-import { Dispatch, KeyboardEvent, ReactNode, SetStateAction, useRef } from 'react';
+import { Dispatch, KeyboardEvent, ReactNode, SetStateAction, useEffect, useRef, useState } from 'react';
 
 import './searchInput.css';
 
 type Props<T> = {
   options: T[];
+  setOptions: Dispatch<SetStateAction<T[]>>;
   selectedOptions: T[];
   renderSelectedItem: (option: T) => ReactNode;
   onRemoveSelectedOption: (option: T) => void;
@@ -15,6 +16,7 @@ type Props<T> = {
 
 const SearchInput = <T,>({
   options,
+  setOptions,
   selectedOptions,
   renderSelectedItem,
   onRemoveSelectedOption,
@@ -24,6 +26,11 @@ const SearchInput = <T,>({
   onOptionSelected,
 }: Props<T>) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    setIsOpen(options.length > 0);
+  }, [options]);
 
   const handleOptionSelected = (option: T) => {
     onOptionSelected(option);
@@ -33,6 +40,11 @@ const SearchInput = <T,>({
   const handleInputKeydown = (e: KeyboardEvent<HTMLInputElement>) => {
     const inputTarget = inputRef.current;
     if (inputTarget === null) return;
+
+    if (e.key === 'Escape' && options.length > 0 && isOpen) {
+      setOptions([]);
+      setIsOpen(false);
+    }
 
     if (e.key === 'Backspace') {
       if (inputTarget?.value === '' && selectedOptions.length > 0) {
