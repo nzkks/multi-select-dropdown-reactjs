@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction, useEffect, useRef } from 'react';
+import { Dispatch, KeyboardEvent, ReactNode, SetStateAction, useRef } from 'react';
 
 import './searchInput.css';
 
@@ -30,27 +30,17 @@ const SearchInput = <T,>({
     inputRef?.current?.focus();
   };
 
-  useEffect(() => {
+  const handleInputKeydown = (e: KeyboardEvent<HTMLInputElement>) => {
     const inputTarget = inputRef.current;
     if (inputTarget === null) return;
 
-    const handler = (e: KeyboardEvent) => {
-      switch (e.code) {
-        case 'Backspace':
-          if (inputTarget.value === '' && selectedOptions.length > 0) {
-            onRemoveSelectedOption(selectedOptions[selectedOptions.length - 1]);
-          }
-          break;
-
-        default:
-          break;
+    if (e.key === 'Backspace') {
+      if (inputTarget?.value === '' && selectedOptions.length > 0) {
+        onRemoveSelectedOption(selectedOptions[selectedOptions.length - 1]);
       }
-    };
-
-    inputTarget.addEventListener('keydown', handler);
-
-    return () => inputTarget.removeEventListener('keydown', handler);
-  }, [onRemoveSelectedOption, selectedOptions]);
+    }
+    return;
+  };
 
   return (
     <div className="searchInputWrapper">
@@ -69,6 +59,7 @@ const SearchInput = <T,>({
             type="text"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
+            onKeyDown={handleInputKeydown}
             placeholder="Search"
           />
           {options.length > 0 ? (
